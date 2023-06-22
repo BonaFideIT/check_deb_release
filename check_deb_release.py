@@ -3,6 +3,7 @@
 """Nagios plugin to monitor if the currently running release of debian matches the desired target distribution"""
 
 import argparse
+import validators
 from natsort import natsort_keygen
 from apt_repo import APTRepository
 from urllib.request import urlopen
@@ -30,6 +31,7 @@ class ReleaseContext(Context):
         self,
         name: str,
         target: str,
+        mirror: str,
         fmt_metric=None,
         result_cls=Result,
     ):
@@ -40,7 +42,7 @@ class ReleaseContext(Context):
         self.ns_key = natsort_keygen()
 
         # determine current debian version for target release
-        repo = APTRepository("http://debian.rub.de/debian/", self.target, "main")
+        repo = APTRepository(mirror, self.target, "main")
         self.target_version = repo.release_file.version
 
     def evaluate(self, metric, resource):
@@ -77,6 +79,20 @@ def parse_args():
         help='Default: "stable", supported: "oldoldstable", "oldstable", "stable", "testing", "experimental"',
     )
 
+    def url(s: str) -> str:
+        """Validate if URL is valid"""
+        if not validators.url(s):
+            raise ValueError("Invalid repository URL provided")
+        return s
+
+    parser.add_argument(
+        "--mirror",
+        metavar="MIRROR",
+        type=url,
+        default="https://deb.debian.org/debian/",
+        help="Debian Mirror to use as release reference. Default: https://deb.debian.org/debian/",
+    )
+
     return parser.parse_args()
 
 
@@ -87,7 +103,7 @@ def main():
     args = parse_args()
 
     # execute check
-    check = Check(Release(), ReleaseContext("release", args.target))
+    check = Check(Release(), ReleaseContext("release", args.target, args.mirror))
     check.main()
 
 
