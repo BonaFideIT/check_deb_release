@@ -10,7 +10,7 @@ from nagiosplugin import Resource, Metric, Result, Check, Context
 from nagiosplugin.state import Ok, Warn, Critical
 
 
-class DebianRelease(Resource):
+class Release(Resource):
 
     """Resource Model for Current Debian Release"""
 
@@ -30,7 +30,7 @@ class ReleaseContext(Context):
         self,
         name: str,
         target: str,
-        fmt_metric="Newer target release as currently installed {value} exists.",
+        fmt_metric=None,
         result_cls=Result,
     ):
         self.target = target
@@ -41,26 +41,53 @@ class ReleaseContext(Context):
 
         # determine current debian version for target release
         repo = APTRepository("http://debian.rub.de/debian/", self.target, "main")
-        self.version = repo.release_file.version
+        self.target_version = repo.release_file.version
 
     def evaluate(self, metric, resource):
         """Compares metric with given Resource"""
 
-        if self.ns_key(metric.value) < self.ns_key(self.version):
+        if self.ns_key(metric.value) < self.ns_key(self.target_version):
+            self.result = Warn
             return self.result_cls(Warn, metric=metric)
 
+        self.result = Ok
         return self.result_cls(Ok, metric=metric)
+
+    def describe(self, metric):
+        """Add description to warning"""
+
+        if self.result == Warn:
+            return f'OS version is older than "{self.target}" ({metric.value} < {self.target_version})'
+
+        return None
 
 
 def parse_args():
     """Parse command line arguments"""
 
+    parser = argparse.ArgumentParser(description=__doc__)
+
+    parser.add_argument(
+        "target",
+        metavar="TARGET",
+        type=str,
+        nargs="?",
+        default="stable",
+        choices=("oldoldstable", "oldstable", "stable", "testing", "experimental"),
+        help='Default: "stable", supported: "oldoldstable", "oldstable", "stable", "testing", "experimental"',
+    )
+
+    return parser.parse_args()
+
 
 def main():
     """Software entry point"""
 
-    # args = parse_args()
-    check = Check(DebianRelease(), ReleaseContext("release", "stable"))
+    # handle command line args
+    args = parse_args()
+
+    # execute check
+    check = Check(Release(), ReleaseContext("release", args.target))
     check.main()
 
 
