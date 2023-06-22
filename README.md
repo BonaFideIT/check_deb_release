@@ -3,6 +3,7 @@
 Works for:
 
 * debian bullseye
+* debian bookworm
 
 Does not currently work:
 
