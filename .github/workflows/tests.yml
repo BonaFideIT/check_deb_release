@@ -11,7 +11,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [debian-11, debian-12]
+        os: [debian-10, debian-11, debian-12, debian-13]
 
     steps:
       - name: Check out code
