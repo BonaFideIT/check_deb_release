@@ -1,25 +1,26 @@
 name: Publish to PyPI
 
 on:
-  push:
-    tags:
-      - 'v*'  # Triggers on version tags like v1.0.0
-
-permissions:
-  id-token: write  # Required for Trusted Publishing
-  contents: read
+  release:
+    types: [published]
 
 jobs:
-  build-and-publish:
+  publish:
     runs-on: ubuntu-latest
-    environment: release  # Matches the environment name in PyPI settings
+    environment:
+      name: pypi
+      url: https://pypi.org/project/check_debian_release/  # Replace with your package name
+
+    permissions:
+      id-token: write  # Required for Trusted Publishing
+      contents: read
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'  # Specify your Python version
 
