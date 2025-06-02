@@ -6,17 +6,15 @@ import argparse
 import validators
 from natsort import natsort_keygen
 from apt_repo import APTRepository
-from urllib.request import urlopen
 from nagiosplugin import Resource, Metric, Result, Check, Context
-from nagiosplugin.state import Ok, Warn, Critical
+from nagiosplugin.state import Ok, Warn
 
 
 class Release(Resource):
-
     """Resource Model for Current Debian Release"""
 
     def probe(self):
-        with open("/etc/debian_version", "r") as fd:
+        with open("/etc/debian_version") as fd:
             line = fd.readline().strip()
             fd.close()
 
@@ -24,7 +22,6 @@ class Release(Resource):
 
 
 class ReleaseContext(Context):
-
     """Evaluation context for debian release number"""
 
     def __init__(

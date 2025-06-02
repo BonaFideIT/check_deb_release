@@ -1,5 +1,7 @@
 # Nagios Plugin to monitor debian target release
 
+[![Test Matrix](https://github.com/bonafideit/check_deb_release/actions/workflows/tests.yml/badge.svg)](https://github.com/bonafideit/check_deb_release/actions/workflows/tests.yml)
+
 Works for:
 
 * debian bullseye
