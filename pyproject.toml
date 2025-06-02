@@ -14,7 +14,7 @@ classifiers = [
     "Programming Language :: Python :: 3",
 ]
 keywords = ["icinga", "nagios", "plugin", "check_command", "debian", "release", "version"]
-requires-python = ">=3.11"
+requires-python = ">=3.9"
 dependencies = [
     "apt-repo>=0.5",
     "nagiosplugin>=1.4.0",
