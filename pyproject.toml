@@ -1,8 +1,19 @@
 [project]
 name = "check-deb-release"
 version = "0.1.0"
-description = "Add your description here"
+description = "Check local debian version against a mirror and warn if a newer release is available."
 readme = "README.md"
+authors = [
+    { name = "Bona Fide IT GmbH", email = "github@bona-fide.it" },
+    { name = "Olaf Rühenbeck", email = "oruehenbeck@bona-fide.it" }
+]
+license = { file = "LICENSE" }
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+]
+keywords = ["icinga", "nagios", "plugin", "check_command", "debian", "release", "version"]
 requires-python = ">=3.11"
 dependencies = [
     "apt-repo>=0.5",
@@ -16,3 +27,9 @@ dev = [
     "pre-commit>=4.2.0",
     "pytest>=8.3.5",
 ]
+
+[project.urls]
+Homepage = "https://github.com/BonaFideIT/check_deb_release"
+
+[project.scripts]
+check_deb_release = "check_deb_release.check_deb_release:main"
