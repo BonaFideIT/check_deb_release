@@ -1,6 +1,6 @@
 [project]
 name = "check-deb-release"
-version = "0.1.1"
+version = "0.1.2"
 description = "Check local debian version against a mirror and warn if a newer release is available."
 readme = "README.md"
 authors = [
